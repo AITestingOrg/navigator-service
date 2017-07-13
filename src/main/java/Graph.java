@@ -5,11 +5,13 @@ public class Graph {
     private Node head;
     private Node temp;
     private LinkedList<Node> queue;
+    private GraphDBAdapter g;
 
-    public Graph(Node node){
+    public Graph(Node node, GraphDBAdapter g){
         this.head = node;
         this.temp = node;
         this.queue = new LinkedList<>();
+        this.g = g;
     }
 
     public Node top(){ return this.temp; }
@@ -32,6 +34,8 @@ public class Graph {
         newPage.visit(nextUrl);
         Node node = new Node(newPage);
         this.top().getChildren().add(node);
+        GraphNode parent = new GraphNode(null, driver.getTitle(),this.temp.getCurrentPage().getUrl());
+        g.addNode(new GraphNode(parent, driver.getTitle(), nextUrl));
 
         if(nextUrl.contains("http://www.zerorezatlanta.com/"))
             this.addToNodes(node);

@@ -8,20 +8,25 @@ import java.util.List;
 
 public class StateMachine {
 
+    static GraphDBAdapter g;
+
     public static void main(String[] args) {
+        g = new Neo4JGraphDB();
         System.setProperty("webdriver.chrome.driver", "./chromedriver");
         WebDriver driver = new ChromeDriver();
 
         String url = "http://www.zerorezatlanta.com/";
 
         driver.get(url);
+        GraphNode home = new GraphNode(null, driver.getTitle(), url);
+        g.addNode(home);
         Page start = new Page(url, PageType.NONE);
         start.setList(driver.findElements(By.tagName("a")));
         start.visit(url);
         start.printList();
 
         Node startingNode = new Node(start);
-        Graph graph = new Graph(startingNode);
+        Graph graph = new Graph(startingNode, g);
 
         boolean first = false;
 
