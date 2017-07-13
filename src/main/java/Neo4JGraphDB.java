@@ -9,16 +9,16 @@ public class Neo4JGraphDB implements GraphDBAdapter {
     Driver driver;
     Session session;
     @Override
-    public void addNode(Node node) {
+    public void addNode(GraphNode graphNode) {
         loadSession();
-        if(node.getParent() != null) {
+        if(graphNode.getParent() != null) {
             session.run("MATCH (p:Page {url:{parentUrl}})"
                     + "CREATE (a:Page {name: {name}, url: {url}})"
                     + "CREATE (p)-[w:Link]->(a)",
-                    parameters("parentUrl", node.getParent().getUrl(), "name", node.getName(), "url", node.getUrl()));
+                    parameters("parentUrl", graphNode.getParent().getUrl(), "name", graphNode.getName(), "url", graphNode.getUrl()));
         } else {
             session.run("CREATE (a:Page {name: {name}, url: {url}})",
-                    parameters("name", node.getName(), "url", node.getUrl()));
+                    parameters("name", graphNode.getName(), "url", graphNode.getUrl()));
         }
         closeSession();
     }
