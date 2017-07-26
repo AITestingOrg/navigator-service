@@ -1,6 +1,6 @@
-package dao;
+package aist.generation.dao;
 
-import models.GraphNode;
+import aist.generation.models.GraphNode;
 
 /**
  * Created by justinp on 7/6/17.

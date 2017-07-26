@@ -1,4 +1,4 @@
-package models;
+package aist.generation.models;
 
 public class Edge {
     private Page from;

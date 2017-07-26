@@ -16,7 +16,7 @@ apply plugin: 'org.springframework.boot'
 
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
-
+ext.seleniumVersion = '3.4.0'
 repositories {
 	mavenCentral()
 }
@@ -24,6 +24,10 @@ repositories {
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-aop')
-	compile('org.springframework.boot:spring-boot-starter-data-neo4j')
+	compile 'org.neo4j.driver:neo4j-java-driver:1.2.1'
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	compile group: 'org.seleniumhq.selenium', name: 'selenium-firefox-driver', version:seleniumVersion
+	compile group: 'org.seleniumhq.selenium', name: 'selenium-chrome-driver', version:seleniumVersion
+	compile group: 'org.seleniumhq.selenium', name: 'selenium-api', version:seleniumVersion
+	compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version:seleniumVersion
 }

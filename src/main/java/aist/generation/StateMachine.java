@@ -1,6 +1,8 @@
-import dao.GraphDBAdapter;
-import dao.Neo4JGraphDB;
-import models.*;
+package aist.generation;
+
+import aist.generation.dao.GraphDBAdapter;
+import aist.generation.dao.Neo4JGraphDB;
+import aist.generation.models.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -14,22 +16,6 @@ public class StateMachine {
     static GraphDBAdapter g;
 
     public static void main(String[] args) {
-        g = new Neo4JGraphDB();
-        System.setProperty("webdriver.chrome.driver", "./chromedriver");
-        WebDriver driver = new ChromeDriver();
-
-        String url = "http://www.zerorezatlanta.com/";
-
-        driver.get(url);
-        GraphNode home = new GraphNode(null, driver.getTitle(), url);
-        g.addNode(home);
-        Page start = new Page(url, PageType.NONE);
-        start.setList(driver.findElements(By.tagName("a")));
-        start.visit(url);
-        start.printList();
-
-        Node startingNode = new Node(start);
-        Graph graph = new Graph(startingNode, g);
 
         boolean first = false;
 

@@ -1,7 +1,10 @@
-package dao;
+package aist.generation.dao;
 
-import models.GraphNode;
-import org.neo4j.driver.v1.*;
+import aist.generation.models.GraphNode;
+import org.neo4j.driver.v1.AuthTokens;
+import org.neo4j.driver.v1.Driver;
+import org.neo4j.driver.v1.GraphDatabase;
+import org.neo4j.driver.v1.Session;
 
 import static org.neo4j.driver.v1.Values.parameters;
 

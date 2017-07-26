@@ -1,5 +1,6 @@
-package models;
+package aist.generation.models;
 
+import aist.generation.dao.GraphDBAdapter;
 import org.openqa.selenium.WebDriver;
 import java.util.LinkedList;
 

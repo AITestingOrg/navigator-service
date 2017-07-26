@@ -1,21 +1,28 @@
-package models;
+package aist.generation.models;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class Node {
-    private Page currentPage;
+    private String url;
+    private String title;
     private List<Node> parents;
     private List<Node> children;
 
-    public Node(Page page) {
-        this.currentPage = page;
-        this.parents = new ArrayList<>();
-        this.children = new ArrayList<>();
+    public Node(String url, String title, List<Node> parents) {
+        this.url = url;
+        this.title = title;
+        this.parents = parents;
     }
 
-    public Page getCurrentPage(){ return this.currentPage; }
+    public String getUrl() {
+        return url;
+    }
+
+    public String getTitle() {
+        return title;
+    }
 
     public List<Node> getParents(){ return this.parents; }
 

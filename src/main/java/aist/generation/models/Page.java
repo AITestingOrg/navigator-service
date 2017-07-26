@@ -1,53 +1,64 @@
-package models;
+package aist.generation.models;
 
-import org.openqa.selenium.WebElement;
-import java.util.ArrayList;
-import java.util.List;
-import org.openqa.selenium.Point;
-
-
+import java.util.Set;
 
 public class Page {
+    private final Set<String> childUrls;
     private String url;
     private PageType pagetype;
-    private List <WebElement> elements;
-    private List<String> urlsVisited;
     private String title;
-    private List<Point> coordinates;
 
-    public Page(String url, PageType type){
+    protected Page(String url, PageType type, Set<String> childUrls, String title){
         this.url = url;
         this.pagetype = type;
-        this.elements = new ArrayList<WebElement>();
-        this.urlsVisited = new ArrayList<String>();
-        this.title = "";
-        this.coordinates = new ArrayList<Point>();
+        this.childUrls = childUrls;
+        this.title = title;
     }
 
-    public void printList(){
-        for(int i = 0; i < elements.size(); i++){
-            System.out.println(elements.get(i).getText());
+    public Set<String> getChildUrls() {
+        return childUrls;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public PageType getPagetype() {
+        return pagetype;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public static class PageBuilder {
+        private String url;
+        private PageType pagetype;
+        private Set<String> childUrls;
+        private String title;
+
+        public PageBuilder setUrl(String url) {
+            this.url = url;
+            return this;
+        }
+
+        public PageBuilder setPagetype(PageType pagetype) {
+            this.pagetype = pagetype;
+            return this;
+        }
+
+        public PageBuilder setChildUrls(Set<String> childUrls) {
+            this.childUrls = childUrls;
+            return this;
+        }
+
+        public PageBuilder setTitle(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public Page build() {
+            return new Page(url, pagetype, childUrls, title);
         }
     }
-
-    public void setList(List<WebElement> list) {
-        for (WebElement element: list) {
-            if (!(element.getLocation().getX() == 0 & element.getLocation().getY() == 0)) {
-                this.elements.add(element);
-                this.coordinates.add(element.getLocation());
-                System.out.println("Element: " + element.getText());
-                System.out.println("Coordinates: ");
-                System.out.println("X: " + element.getLocation().x);
-                System.out.println("Y: " + element.getLocation().y + "\n");
-            }
-        }
-    }
-
-    public String getUrl() { return this.url; }
-
-    public void visit(String visited){ this.urlsVisited.add(visited); }
-
-    public boolean hasVisited(String url){ return urlsVisited.contains(url); }
-
-    public void addTitle(String title){ this.title = title; }
 }
