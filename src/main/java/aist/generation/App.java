@@ -1,5 +1,11 @@
 /**
  * Created by justinp on 7/26/17.
  */
-public class App {
+@Component
+public class App implements CommandLineRunner {
+
+    @Override
+    public void run(String... args) throws Exception {
+
+    }
 }
