@@ -1,37 +1,41 @@
 package aist.generation.services;
 
 import aist.generation.dao.GraphDBAdapter;
-import aist.generation.models.Graph;
-import aist.generation.models.Process;
-import aist.generation.models.Page;
-import aist.generation.oldModels.GraphNode;
+import aist.generation.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created by justinp on 7/26/17.
  */
-public class GraphService {
+public class GraphService<E extends InnerEdge, T extends InnerVertex> {
+
     @Autowired
-    private GraphDBAdapter graphDb;
+    private GraphDBAdapter<E,T> graphDb;
 
-    private Graph<Process, Page> graph;
+    @Autowired
+    private T root;
 
-    private Page root;
+    private Graph<E, T> graph;
 
-    public GraphService(Page root) {
+    public GraphService(T root) {
         this.root = root;
         this.graph = new Graph<>();
-        this.graph.addNode(root);
+        this.graph.addVertex(root);
     }
 
-    public void setRoot(Page root) {
+    public void setRoot(T root) {
         this.root = root;
+        graph.addVertex(root);
     }
 
-    public void add(Page from, Page to, Process process) {
-        graphDb.addVertex(new GraphNode());
-        graphDb.addEdge(from.getUrl(), to.getUrl());
-        graph.addEdge(from, to, process);
+    public void addVertex(T innerVertex) {
+        graph.addVertex(innerVertex);
+        graphDb.addVertex(innerVertex);
+    }
+
+    public void addEdge(T from, T to, E innerEdge) {
+        graph.addEdge(from, to, innerEdge);
+        graphDb.addEdge(from, to, innerEdge);
     }
 
 }

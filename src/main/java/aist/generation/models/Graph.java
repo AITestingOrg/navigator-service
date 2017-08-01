@@ -6,23 +6,23 @@ import java.util.Map;
 /**
  * Created by matthewro on 7/27/17.
  */
-public class Graph <E,T extends InnerVertex> {
+public class Graph <E extends InnerEdge,T extends InnerVertex> {
 
     private final Map<T, Vertex<E,T>> adjacencyList = new HashMap<>();
 
     public Graph() {
     }
 
-    public boolean addNode(T node) {
-        if (adjacencyList.containsKey(node)) {
+    public boolean addVertex(T innerVertex) {
+        if (adjacencyList.containsKey(innerVertex)) {
             return false;
         }
-        adjacencyList.put(node, new Vertex<>(node));
+        adjacencyList.put(innerVertex, new Vertex<>(innerVertex));
         return true;
     }
 
     public boolean addEdge(T from, T to, E info) {
-        if (!containsNode(from) || !containsNode(to)) {
+        if (!containsVertex(from) || !containsVertex(to)) {
             return false;
         }
 
@@ -31,32 +31,32 @@ public class Graph <E,T extends InnerVertex> {
         return fromVertex.addEdge(toVertex, info);
     }
 
-    public boolean removeNode(T node) {
-        if (!adjacencyList.containsKey(node)) {
+    public boolean removeVertex(T innerVertex) {
+        if (!adjacencyList.containsKey(innerVertex)) {
             return false;
         }
 
-        final Vertex<E,T> toRemove = getVertex(node);
+        final Vertex<E,T> toRemove = getVertex(innerVertex);
 
         adjacencyList.values().forEach(vertex -> vertex.removeEdge(toRemove));
 
-        adjacencyList.remove(node);
+        adjacencyList.remove(innerVertex);
         return true;
     }
 
     public boolean removeEdge(T from, T to) {
-        return !(!containsNode(from) || !containsNode(to)) && getVertex(from).removeEdge(getVertex(to));
+        return !(!containsVertex(from) || !containsVertex(to)) && getVertex(from).removeEdge(getVertex(to));
     }
 
-    public boolean containsNode(T node) {
-        return adjacencyList.containsKey(node);
+    public boolean containsVertex(T innerVertex) {
+        return adjacencyList.containsKey(innerVertex);
     }
 
     public boolean containsEdge(T from, T to) {
-        return !(!containsNode(from) || !containsNode(to)) && getVertex(from).hasEdge(getVertex(to));
+        return !(!containsVertex(from) || !containsVertex(to)) && getVertex(from).hasEdge(getVertex(to));
     }
 
-    private Vertex<E,T> getVertex(T node) {
-        return adjacencyList.get(node);
+    private Vertex<E,T> getVertex(T innerVertex) {
+        return adjacencyList.get(innerVertex);
     }
 }

@@ -6,11 +6,10 @@ import java.util.Optional;
 /**
  * Created by matthewro on 7/27/17.
  */
-public class Vertex<E, T extends InnerVertex> {
+public class Vertex<E extends InnerEdge, T extends InnerVertex> {
 
     private T innerVertex;
     private List<Edge<E,T>> edges;
-    private Vertex parent;
 
     public Vertex(T innerVertex) {
         this.innerVertex = innerVertex;
@@ -38,14 +37,6 @@ public class Vertex<E, T extends InnerVertex> {
 
     public boolean hasEdge(Vertex<E,T> to) {
         return findEdge(to).isPresent();
-    }
-
-    public Vertex getParent() {
-        return parent;
-    }
-
-    public void setParent(Vertex parent) {
-        this.parent = parent;
     }
 
     public T getInnerVertex() {

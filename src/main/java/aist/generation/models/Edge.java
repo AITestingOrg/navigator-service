@@ -3,7 +3,7 @@ package aist.generation.models;
 /**
  * Created by matthewro on 7/27/17.
  */
-public class Edge<E,T extends InnerVertex> {
+public class Edge<E extends InnerEdge,T extends InnerVertex> {
 
     private Vertex<E,T> from, to;
     private E info;

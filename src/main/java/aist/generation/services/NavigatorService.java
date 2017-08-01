@@ -24,10 +24,8 @@ public class NavigatorService {
     @Value("${aist.generation.url}")
     private String rootURL;
 
-    @Autowired
-    private GraphService graphService;
+    private GraphService<Process, Page> graphService;
 
-    @Autowired
     private UrlService urlService;
 
     @Autowired
@@ -44,7 +42,7 @@ public class NavigatorService {
         Page rootPage = navigate(rootURL);
         Queue<Page> pageQueue = new LinkedList<>();
         pageQueue.add(rootPage);
-        graphService.setRoot(rootPage);
+        graphService = new GraphService<>(rootPage);
         urlService = new UrlService(rootURL);
 
 //        Gets the page at the top of the queue when nonempty
@@ -73,6 +71,6 @@ public class NavigatorService {
     }
 
     private void addToGraph(Page from, Page to, Process process) {
-        graphService.add(from, to, process);
+        graphService.addEdge(from, to, process);
     }
 }

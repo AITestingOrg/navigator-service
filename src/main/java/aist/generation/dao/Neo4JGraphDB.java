@@ -1,42 +1,51 @@
 package aist.generation.dao;
 
-import aist.generation.models.Page;
-import aist.generation.models.Vertex;
-import aist.generation.oldModels.GraphNode;
+import aist.generation.models.*;
 import org.neo4j.driver.v1.AuthTokens;
 import org.neo4j.driver.v1.Driver;
 import org.neo4j.driver.v1.GraphDatabase;
 import org.neo4j.driver.v1.Session;
+import org.springframework.beans.factory.annotation.Value;
 
 import static org.neo4j.driver.v1.Values.parameters;
 
 /**
  * Created by justinp on 7/6/17.
  */
-public class Neo4JGraphDB implements GraphDBAdapter<Process, Page> {
+public class Neo4JGraphDB implements GraphDBAdapter {
+
+    @Value("${aist.generation.graphDB.url}")
+    private String graphDBUrl;
+
+    @Value("${aist.generation.graphDB.username}")
+    private String graphDBUsername;
+
+    @Value("${aist.generation.graphDB.password}")
+    private String graphDBPassword;
+
+
     private Driver driver;
     private Session session;
 
     @Override
-    public void addVertex(Vertex vertex) {
+    public void addVertex(InnerVertex innerVertex) {
         loadSession();
-        if(vertex.getParent() != null) {
+        if(innerVertex != null) {
             session.run("MATCH (p:models.Page {url:{parentUrl}})"
-                    + "CREATE (a:models.Page {name: {name}, url: {url}})"
-                    + "CREATE (p)-[w:Link]->(a)",
-                    parameters("parentUrl", vertex.getParent().getInnerVertex().getUrl(),
-                            "name", vertex.getInnerVertex().getName(),
-                            "url", vertex.getInnerVertex().getUrl()));
+                            + "CREATE (a:models.Page {name: {name}, url: {url}})"
+                            + "CREATE (p)-[w:Link]->(a)",
+                    parameters("name", innerVertex.getName(),
+                            "url", innerVertex.getUrl()));
         } else {
             session.run("CREATE (a:models.Page {name: {name}, url: {url}})",
-                    parameters("name", vertex.getInnerVertex().getName(),
-                            "url", vertex.getInnerVertex().getUrl()));
+                    parameters("name", innerVertex.getName(),
+                            "url", innerVertex.getUrl()));
         }
         closeSession();
     }
 
     @Override
-    public void addEdge(Vertex from, Vertex to, Process info) {
+    public void addEdge(InnerVertex from, InnerVertex to, InnerEdge innerEdge) {
         loadSession();
         session.run("MATCH (f:models.Page {url:{from}})"
                         + "MATCH (t:models.Page {url:{to}})"
@@ -51,7 +60,7 @@ public class Neo4JGraphDB implements GraphDBAdapter<Process, Page> {
     }
 
     private void loadSession() {
-        this.driver = GraphDatabase.driver( "bolt://localhost:7687", AuthTokens.basic( "neo4j", "test" ) );
+        this.driver = GraphDatabase.driver( graphDBUrl, AuthTokens.basic( "neo4j", "test" ) );
         this.session = driver.session();
     }
 }
