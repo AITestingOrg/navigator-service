@@ -2,8 +2,6 @@ package aist.generation.instruments;
 
 import aist.generation.models.Page;
 
-import java.net.URL;
-
 /**
  * Created by justinp on 7/26/17.
  */

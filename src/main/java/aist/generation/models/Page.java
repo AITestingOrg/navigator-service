@@ -2,17 +2,17 @@ package aist.generation.models;
 
 import java.util.Set;
 
-public class Page {
+public class Page implements InnerVertex {
     private final Set<String> childUrls;
     private String url;
     private PageType pagetype;
-    private String title;
+    private String Name;
 
-    protected Page(String url, PageType type, Set<String> childUrls, String title){
+    protected Page(String url, PageType type, Set<String> childUrls, String Name){
         this.url = url;
         this.pagetype = type;
         this.childUrls = childUrls;
-        this.title = title;
+        this.Name = Name;
     }
 
     public Set<String> getChildUrls() {
@@ -27,8 +27,8 @@ public class Page {
         return pagetype;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return Name;
     }
 
     public static class PageBuilder {

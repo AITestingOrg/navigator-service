@@ -1,8 +1,6 @@
-package aist.generation.models;
+package aist.generation.oldModels;
 
-import java.util.ArrayList;
 import java.util.List;
-
 
 public class Node {
     private String url;

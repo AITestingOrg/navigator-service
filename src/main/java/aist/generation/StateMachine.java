@@ -1,12 +1,10 @@
 package aist.generation;
 
 import aist.generation.dao.GraphDBAdapter;
-import aist.generation.dao.Neo4JGraphDB;
-import aist.generation.models.*;
+import aist.generation.oldModels.Graph2;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.util.List;
 
@@ -34,7 +32,7 @@ public class StateMachine {
         driver.quit();
     }
 
-    public static boolean exploreLink(WebDriver driver, Graph graph) {
+    public static boolean exploreLink(WebDriver driver, Graph2 graph) {
         List<WebElement> elements = driver.findElements(By.tagName("a"));
         String currentUrl = "";
         String nextUrl = "";

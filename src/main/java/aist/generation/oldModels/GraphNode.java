@@ -1,4 +1,4 @@
-package aist.generation.models;
+package aist.generation.oldModels;
 
 /**
  * Created by justinp on 7/6/17.

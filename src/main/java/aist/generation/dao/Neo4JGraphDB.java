@@ -1,6 +1,8 @@
 package aist.generation.dao;
 
-import aist.generation.models.GraphNode;
+import aist.generation.models.Page;
+import aist.generation.models.Vertex;
+import aist.generation.oldModels.GraphNode;
 import org.neo4j.driver.v1.AuthTokens;
 import org.neo4j.driver.v1.Driver;
 import org.neo4j.driver.v1.GraphDatabase;
@@ -11,26 +13,30 @@ import static org.neo4j.driver.v1.Values.parameters;
 /**
  * Created by justinp on 7/6/17.
  */
-public class Neo4JGraphDB implements GraphDBAdapter {
-    Driver driver;
-    Session session;
+public class Neo4JGraphDB implements GraphDBAdapter<Process, Page> {
+    private Driver driver;
+    private Session session;
+
     @Override
-    public void addNode(GraphNode graphNode) {
+    public void addVertex(Vertex vertex) {
         loadSession();
-        if(graphNode.getParent() != null) {
+        if(vertex.getParent() != null) {
             session.run("MATCH (p:models.Page {url:{parentUrl}})"
                     + "CREATE (a:models.Page {name: {name}, url: {url}})"
                     + "CREATE (p)-[w:Link]->(a)",
-                    parameters("parentUrl", graphNode.getParent().getUrl(), "name", graphNode.getName(), "url", graphNode.getUrl()));
+                    parameters("parentUrl", vertex.getParent().getInnerVertex().getUrl(),
+                            "name", vertex.getInnerVertex().getName(),
+                            "url", vertex.getInnerVertex().getUrl()));
         } else {
             session.run("CREATE (a:models.Page {name: {name}, url: {url}})",
-                    parameters("name", graphNode.getName(), "url", graphNode.getUrl()));
+                    parameters("name", vertex.getInnerVertex().getName(),
+                            "url", vertex.getInnerVertex().getUrl()));
         }
         closeSession();
     }
 
     @Override
-    public void addEdge(String from, String to) {
+    public void addEdge(Vertex from, Vertex to, Process info) {
         loadSession();
         session.run("MATCH (f:models.Page {url:{from}})"
                         + "MATCH (t:models.Page {url:{to}})"

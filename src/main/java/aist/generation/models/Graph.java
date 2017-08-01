@@ -1,46 +1,62 @@
 package aist.generation.models;
 
-import aist.generation.dao.GraphDBAdapter;
-import org.openqa.selenium.WebDriver;
-import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Graph {
-    private Node head;
-    private Node temp;
-    private LinkedList<Node> queue;
-    private GraphDBAdapter g;
+/**
+ * Created by matthewro on 7/27/17.
+ */
+public class Graph <E,T extends InnerVertex> {
 
-    public Graph(Node node, GraphDBAdapter g){
-        this.head = node;
-        this.temp = node;
-        this.queue = new LinkedList<>();
-        this.g = g;
+    private final Map<T, Vertex<E,T>> adjacencyList = new HashMap<>();
+
+    public Graph() {
     }
 
-    public Node top(){ return this.temp; }
-
-    public void transition(){ this.temp = this.queue.peek(); }
-
-    public void addToNodes(Node node){ this.queue.add(node); }
-
-    public boolean graphQueueEmpty(){ return this.queue.isEmpty(); }
-
-    public void removeFromQueue(){
-        if(this.queue.size() > 0)
-            this.queue.remove();
+    public boolean addNode(T node) {
+        if (adjacencyList.containsKey(node)) {
+            return false;
+        }
+        adjacencyList.put(node, new Vertex<>(node));
+        return true;
     }
 
-    public void addToGraph(WebDriver driver, String nextUrl, String visit){
-        Page newPage = new Page(nextUrl, PageType.NONE);
-        newPage.addTitle(driver.getTitle());
-        newPage.visit(visit);
-        newPage.visit(nextUrl);
-        Node node = new Node(newPage);
-        this.top().getChildren().add(node);
-        GraphNode parent = new GraphNode(null, driver.getTitle(),this.temp.getCurrentPage().getUrl());
-        g.addNode(new GraphNode(parent, driver.getTitle(), nextUrl));
+    public boolean addEdge(T from, T to, E info) {
+        if (!containsNode(from) || !containsNode(to)) {
+            return false;
+        }
 
-        if(nextUrl.contains("http://www.zerorezatlanta.com/"))
-            this.addToNodes(node);
+        Vertex<E,T> fromVertex = getVertex(from);
+        Vertex<E,T> toVertex = getVertex(to);
+        return fromVertex.addEdge(toVertex, info);
+    }
+
+    public boolean removeNode(T node) {
+        if (!adjacencyList.containsKey(node)) {
+            return false;
+        }
+
+        final Vertex<E,T> toRemove = getVertex(node);
+
+        adjacencyList.values().forEach(vertex -> vertex.removeEdge(toRemove));
+
+        adjacencyList.remove(node);
+        return true;
+    }
+
+    public boolean removeEdge(T from, T to) {
+        return !(!containsNode(from) || !containsNode(to)) && getVertex(from).removeEdge(getVertex(to));
+    }
+
+    public boolean containsNode(T node) {
+        return adjacencyList.containsKey(node);
+    }
+
+    public boolean containsEdge(T from, T to) {
+        return !(!containsNode(from) || !containsNode(to)) && getVertex(from).hasEdge(getVertex(to));
+    }
+
+    private Vertex<E,T> getVertex(T node) {
+        return adjacencyList.get(node);
     }
 }
