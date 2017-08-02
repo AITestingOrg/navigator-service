@@ -4,6 +4,7 @@ import aist.generation.models.Page;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +23,11 @@ public class SeleniumInstrument implements InstrumentAdapter {
     private WebDriver webDriver;
 
     public SeleniumInstrument() {
-        System.setProperty(driverLabel, driverPath);
-        this.webDriver = new ChromeDriver();
+//        System.setProperty(driverLabel, driverPath);
+//        this.webDriver = new ChromeDriver();
     }
+
+
 
     /**
      * todo: refactor this, this should have some form of intelligence

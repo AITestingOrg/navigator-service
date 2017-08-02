@@ -2,6 +2,8 @@ package aist.generation;
 
 import aist.generation.services.NavigatorService;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
 /**

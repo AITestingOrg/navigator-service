@@ -5,7 +5,9 @@ import aist.generation.models.Page;
 import aist.generation.models.Process;
 import com.sun.deploy.net.URLEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import sun.plugin2.message.helper.URLHelper;
 
 import java.net.URL;
@@ -17,10 +19,12 @@ import java.util.Set;
 /**
  * Created by justinp on 7/26/17.
  */
+@Service
 public class NavigatorService {
     /**
      * todo: make this a URL later
      */
+
     @Value("${aist.generation.url}")
     private String rootURL;
 
@@ -29,6 +33,7 @@ public class NavigatorService {
     private UrlService urlService;
 
     @Autowired
+    @Qualifier("seleniumInstrument")
     private InstrumentAdapter instrumentAdapter;
 
     private Set<String> visitedURLs;
@@ -38,6 +43,9 @@ public class NavigatorService {
     }
 
     public void run() {
+        System.out.println("Starting...");
+        System.out.println("ROOT URL: " + rootURL);
+
 //        Initializes the root page, adds it to the queue and graph service
         Page rootPage = navigate(rootURL);
         Queue<Page> pageQueue = new LinkedList<>();
