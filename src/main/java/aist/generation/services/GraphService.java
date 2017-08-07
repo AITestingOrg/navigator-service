@@ -3,39 +3,36 @@ package aist.generation.services;
 import aist.generation.dao.GraphDBAdapter;
 import aist.generation.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by justinp on 7/26/17.
  */
-public class GraphService<E extends InnerEdge, T extends InnerVertex> {
+@Service
+public class GraphService<E extends InnerEdge,T extends InnerVertex>  implements GraphAdapter<E,T> {
 
     @Autowired
-    private GraphDBAdapter<E,T> graphDb;
+    private GraphDBAdapter graphDb;
 
-    @Autowired
-    private T root;
+    private InnerVertex root;
 
-    private Graph<E, T> graph;
+    private Graph<E,T> graph = new Graph<>();
 
-    public GraphService(T root) {
-        this.root = root;
-        this.graph = new Graph<>();
-        this.graph.addVertex(root);
-    }
-
+    @Override
     public void setRoot(T root) {
         this.root = root;
-        graph.addVertex(root);
+        addVertex(root);
     }
 
+    @Override
     public void addVertex(T innerVertex) {
         graph.addVertex(innerVertex);
         graphDb.addVertex(innerVertex);
     }
 
+    @Override
     public void addEdge(T from, T to, E innerEdge) {
         graph.addEdge(from, to, innerEdge);
         graphDb.addEdge(from, to, innerEdge);
     }
-
 }

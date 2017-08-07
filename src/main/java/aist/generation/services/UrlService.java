@@ -33,11 +33,20 @@ public class UrlService {
         } catch (MalformedURLException e) {
             System.out.println("ERROR: Malformed URL");
             e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            System.out.println("ERROR: Illegal Argument Exception");
+            e.printStackTrace();
+        } catch(Exception e){
+            e.printStackTrace();
         }
         return Optional.empty();
     }
 
     public URL getURL(String urlString) {
         return generateURL(urlString).orElse(null);
+    }
+
+    public String getHostName() {
+        return hostName;
     }
 }

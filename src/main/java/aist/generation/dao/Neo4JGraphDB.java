@@ -5,13 +5,16 @@ import org.neo4j.driver.v1.AuthTokens;
 import org.neo4j.driver.v1.Driver;
 import org.neo4j.driver.v1.GraphDatabase;
 import org.neo4j.driver.v1.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import static org.neo4j.driver.v1.Values.parameters;
 
 /**
  * Created by justinp on 7/6/17.
  */
+@Service
 public class Neo4JGraphDB implements GraphDBAdapter {
 
     @Value("${aist.generation.graphDB.url}")
@@ -30,27 +33,33 @@ public class Neo4JGraphDB implements GraphDBAdapter {
     @Override
     public void addVertex(InnerVertex innerVertex) {
         loadSession();
-        if(innerVertex != null) {
-            session.run("MATCH (p:models.Page {url:{parentUrl}})"
-                            + "CREATE (a:models.Page {name: {name}, url: {url}})"
-                            + "CREATE (p)-[w:Link]->(a)",
-                    parameters("name", innerVertex.getName(),
-                            "url", innerVertex.getUrl()));
-        } else {
-            session.run("CREATE (a:models.Page {name: {name}, url: {url}})",
-                    parameters("name", innerVertex.getName(),
-                            "url", innerVertex.getUrl()));
-        }
+
+        System.out.println("Creating Database Vertex");
+        session.run("CREATE(a:Page{name:{name},url:{url}})",
+                parameters("name", innerVertex.getName(),
+                        "url", innerVertex.getUrl()));
+
         closeSession();
     }
 
     @Override
     public void addEdge(InnerVertex from, InnerVertex to, InnerEdge innerEdge) {
         loadSession();
-        session.run("MATCH (f:models.Page {url:{from}})"
-                        + "MATCH (t:models.Page {url:{to}})"
+
+        System.out.println("Creating Database Edge");
+        session.run("MATCH (f:Page{url:{from}})"
+                        + "MATCH (t:Page{url:{to}})"
                         + "CREATE (f)-[w:Link]->(t)",
-                parameters("from", from, "to", to));
+                parameters("from", from.getUrl(), "to", to.getUrl()));
+
+        closeSession();
+    }
+
+    public void clearDatabase(){
+        loadSession();
+        session.run("MATCH (n)" +
+                "OPTIONAL MATCH (n)-[r]-()" +
+                "DELETE n,r");
         closeSession();
     }
 
@@ -60,7 +69,7 @@ public class Neo4JGraphDB implements GraphDBAdapter {
     }
 
     private void loadSession() {
-        this.driver = GraphDatabase.driver( graphDBUrl, AuthTokens.basic( "neo4j", "test" ) );
+        this.driver = GraphDatabase.driver(graphDBUrl, AuthTokens.basic( graphDBUsername, graphDBPassword ) );
         this.session = driver.session();
     }
 }

@@ -16,18 +16,24 @@ import java.util.stream.Collectors;
  */
 @Service
 public class SeleniumInstrument implements InstrumentAdapter {
-    @Value("${aist.generation.selenium.driver}")
-    private String driverLabel;
-    @Value("${aist.generation.selenium.driver-path}")
+
+    private String driver;
+
     private String driverPath;
+
     private WebDriver webDriver;
 
-    public SeleniumInstrument() {
-//        System.setProperty(driverLabel, driverPath);
-//        this.webDriver = new ChromeDriver();
+    @Autowired
+    public SeleniumInstrument(
+            @Value("${aist.generation.selenium.driver}") String driver,
+            @Value("${aist.generation.selenium.driver-path}") String driverPath) {
+        System.out.println("Creating a selenium driver...");
+        System.out.println(driver);
+        System.out.println(driverPath);
+        System.setProperty(driver, driverPath);
+        webDriver = new ChromeDriver();
+        System.out.println("Made it here");
     }
-
-
 
     /**
      * todo: refactor this, this should have some form of intelligence
@@ -38,6 +44,7 @@ public class SeleniumInstrument implements InstrumentAdapter {
     public Page get(String url) {
         webDriver.get(url);
         Set<String> hyperLinkSet = webDriver.findElements(By.tagName("a")).stream().map(webElement -> webElement.getAttribute("href")).collect(Collectors.toSet());
+        System.out.println("hyperlinkset: " + hyperLinkSet);
         String title = webDriver.getTitle();
         return (new Page.PageBuilder())
                 .setChildUrls(hyperLinkSet)
@@ -45,5 +52,10 @@ public class SeleniumInstrument implements InstrumentAdapter {
                 .setTitle(title)
                 .setUrl(url)
                 .build();
+    }
+
+    @Override
+    public void quit() {
+        webDriver.quit();
     }
 }

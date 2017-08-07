@@ -3,14 +3,10 @@ package aist.generation.services;
 import aist.generation.instruments.InstrumentAdapter;
 import aist.generation.models.Page;
 import aist.generation.models.Process;
-import com.sun.deploy.net.URLEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import sun.plugin2.message.helper.URLHelper;
 
-import java.net.URL;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -28,12 +24,12 @@ public class NavigatorService {
     @Value("${aist.generation.url}")
     private String rootURL;
 
-    private GraphService<Process, Page> graphService;
+    @Autowired
+    private GraphAdapter<Process, Page> graphAdapter;
 
     private UrlService urlService;
 
     @Autowired
-    @Qualifier("seleniumInstrument")
     private InstrumentAdapter instrumentAdapter;
 
     private Set<String> visitedURLs;
@@ -43,31 +39,43 @@ public class NavigatorService {
     }
 
     public void run() {
-        System.out.println("Starting...");
-        System.out.println("ROOT URL: " + rootURL);
+        try {
+            System.out.println("Starting...");
+            System.out.println("ROOT URL: " + rootURL);
 
 //        Initializes the root page, adds it to the queue and graph service
-        Page rootPage = navigate(rootURL);
-        Queue<Page> pageQueue = new LinkedList<>();
-        pageQueue.add(rootPage);
-        graphService = new GraphService<>(rootPage);
-        urlService = new UrlService(rootURL);
+            Page rootPage = navigate(rootURL);
+            Queue<Page> pageQueue = new LinkedList<>();
+            pageQueue.add(rootPage);
+            graphAdapter.setRoot(rootPage);
+            urlService = new UrlService(rootURL);
 
 //        Gets the page at the top of the queue when nonempty
-        while (!pageQueue.isEmpty()) {
-            Page currentPage = pageQueue.poll();
-            currentPage.getChildUrls().forEach(url -> {
+            while (!pageQueue.isEmpty()) {
+                Page currentPage = pageQueue.poll();
+                System.out.println("Currently at: " + currentPage.getUrl());
+                currentPage.getChildUrls().forEach(url -> {
+                    System.out.println("child url: " + url);
 //                Checks if the page has been visited before and checks if it is a valid page
-                if (!visitedURLs.contains(url) && validate(url)) {
+                    if (!visitedURLs.contains(url) && validate(url)) {
 //                    Instantiate the page we are visiting
-                    Page toVisit = navigate(url);
+                        Page toVisit = navigate(url);
 //                    Adds the new page to the graph, visited urls, and to the queue
-                    addToGraph(currentPage, toVisit, new Process());
-                    visitedURLs.add(toVisit.getUrl());
-                    pageQueue.add(toVisit);
-                }
-            });
+                        addVertex(toVisit);
+                        addEdge(currentPage, toVisit, new Process());
+                        visitedURLs.add(toVisit.getUrl());
+                        pageQueue.add(toVisit);
+                    }
+                });
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+            afterRun();
         }
+    }
+
+    private void afterRun() {
+        instrumentAdapter.quit();
     }
 
     private Page navigate(String url) {
@@ -78,7 +86,11 @@ public class NavigatorService {
         return urlService.validate(url);
     }
 
-    private void addToGraph(Page from, Page to, Process process) {
-        graphService.addEdge(from, to, process);
+    private void addVertex(Page page) {
+        graphAdapter.addVertex(page);
+    }
+
+    private void addEdge(Page from, Page to, Process process) {
+        graphAdapter.addEdge(from, to, process);
     }
 }

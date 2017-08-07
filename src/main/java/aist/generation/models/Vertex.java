@@ -1,5 +1,6 @@
 package aist.generation.models;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,7 @@ public class Vertex<E extends InnerEdge, T extends InnerVertex> {
 
     public Vertex(T innerVertex) {
         this.innerVertex = innerVertex;
+        edges = new ArrayList<>();
     }
 
     public boolean addEdge(Vertex<E,T> vertex, E info) {
