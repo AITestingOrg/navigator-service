@@ -6,4 +6,5 @@ package aist.generation.models;
 public interface InnerVertex {
     String getUrl();
     String getName();
+    String getPageType();
 }

@@ -2,6 +2,7 @@ package aist.generation.services;
 
 import aist.generation.instruments.InstrumentAdapter;
 import aist.generation.models.Page;
+import aist.generation.models.PageType;
 import aist.generation.models.Process;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +33,9 @@ public class NavigatorService {
     @Autowired
     private InstrumentAdapter instrumentAdapter;
 
+    @Autowired
+    private Intelligence intelligence;
+
     private Set<String> visitedURLs;
 
     public NavigatorService() {
@@ -42,9 +46,9 @@ public class NavigatorService {
         try {
             System.out.println("Starting...");
             System.out.println("ROOT URL: " + rootURL);
-
 //        Initializes the root page, adds it to the queue and graph service
             Page rootPage = navigate(rootURL);
+            rootPage.setPageType(classify(rootPage));
             Queue<Page> pageQueue = new LinkedList<>();
             pageQueue.add(rootPage);
             graphAdapter.setRoot(rootPage);
@@ -53,6 +57,7 @@ public class NavigatorService {
 //        Gets the page at the top of the queue when nonempty
             while (!pageQueue.isEmpty()) {
                 Page currentPage = pageQueue.poll();
+                currentPage.setPageType(classify(currentPage));
                 System.out.println("Currently at: " + currentPage.getUrl());
                 currentPage.getChildUrls().forEach(url -> {
                     System.out.println("child url: " + url);
@@ -60,6 +65,7 @@ public class NavigatorService {
                     if (!visitedURLs.contains(url) && validate(url)) {
 //                    Instantiate the page we are visiting
                         Page toVisit = navigate(url);
+                        toVisit.setPageType(classify(toVisit));
 //                    Adds the new page to the graph, visited urls, and to the queue
                         addVertex(toVisit);
                         addEdge(currentPage, toVisit, new Process());
@@ -72,6 +78,8 @@ public class NavigatorService {
             e.printStackTrace();
             afterRun();
         }
+
+        afterRun();
     }
 
     private void afterRun() {
@@ -81,6 +89,8 @@ public class NavigatorService {
     private Page navigate(String url) {
         return instrumentAdapter.get(url);
     }
+
+    private PageType classify(Page page) { return intelligence.classify(page); }
 
     private boolean validate(String url) {
         return urlService.validate(url);

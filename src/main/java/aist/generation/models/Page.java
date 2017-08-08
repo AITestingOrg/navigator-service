@@ -7,12 +7,13 @@ public class Page implements InnerVertex {
     private String url;
     private PageType pagetype;
     private String Name;
+    private String html;
 
-    protected Page(String url, PageType type, Set<String> childUrls, String Name){
+    protected Page(String url, Set<String> childUrls, String Name, String html){
         this.url = url;
-        this.pagetype = type;
         this.childUrls = childUrls;
         this.Name = Name;
+        this.html = html;
     }
 
     public Set<String> getChildUrls() {
@@ -27,23 +28,28 @@ public class Page implements InnerVertex {
         return pagetype;
     }
 
+    public void setPageType(PageType pageType) { this.pagetype = pageType; }
+
     public String getName() {
         return Name;
     }
 
+    public String getPageType() {
+        return pagetype.toString();
+    }
+
+    public String getHtml() {
+        return html;
+    }
+
     public static class PageBuilder {
         private String url;
-        private PageType pagetype;
         private Set<String> childUrls;
         private String title;
+        private String html;
 
         public PageBuilder setUrl(String url) {
             this.url = url;
-            return this;
-        }
-
-        public PageBuilder setPagetype(PageType pagetype) {
-            this.pagetype = pagetype;
             return this;
         }
 
@@ -57,8 +63,13 @@ public class Page implements InnerVertex {
             return this;
         }
 
+        public PageBuilder setHtml(String html) {
+            this.html = html;
+            return this;
+        }
+
         public Page build() {
-            return new Page(url, pagetype, childUrls, title);
+            return new Page(url, childUrls, title, html);
         }
     }
 }

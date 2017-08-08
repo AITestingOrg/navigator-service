@@ -1,6 +1,7 @@
 package aist.generation.instruments;
 
 import aist.generation.models.Page;
+import aist.generation.services.ClientAdapter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.PrintWriter;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -48,14 +50,27 @@ public class SeleniumInstrument implements InstrumentAdapter {
         String title = webDriver.getTitle();
         return (new Page.PageBuilder())
                 .setChildUrls(hyperLinkSet)
-                .setPagetype(null)
                 .setTitle(title)
                 .setUrl(url)
+                .setHtml(getPageSource())
                 .build();
     }
 
     @Override
     public void quit() {
         webDriver.quit();
+    }
+
+    @Override
+    public String getPageSource() {
+        try {
+            //TODO: Find a better way to store the html
+            PrintWriter writer = new PrintWriter("/Users/bryant/Desktop/Modular/test.html", "UTF-8");
+            writer.append(webDriver.getPageSource());
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return webDriver.getPageSource();
     }
 }

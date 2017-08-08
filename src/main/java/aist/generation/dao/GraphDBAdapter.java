@@ -11,4 +11,5 @@ import org.springframework.stereotype.Service;
 public interface GraphDBAdapter {
     void addVertex(InnerVertex innerVertex);
     void addEdge(InnerVertex from, InnerVertex to, InnerEdge innerEdge);
+    void clearDatabase();
 }

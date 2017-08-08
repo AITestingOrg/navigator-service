@@ -35,9 +35,9 @@ public class Neo4JGraphDB implements GraphDBAdapter {
         loadSession();
 
         System.out.println("Creating Database Vertex");
-        session.run("CREATE(a:Page{name:{name},url:{url}})",
+        session.run("CREATE(a:Page{name:{name},url:{url},type:{type}})",
                 parameters("name", innerVertex.getName(),
-                        "url", innerVertex.getUrl()));
+                        "url", innerVertex.getUrl(), "type", innerVertex.getPageType()));
 
         closeSession();
     }

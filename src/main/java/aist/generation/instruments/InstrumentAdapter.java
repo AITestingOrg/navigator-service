@@ -10,4 +10,5 @@ import org.springframework.stereotype.Service;
 public interface InstrumentAdapter {
     Page get(String url);
     void quit();
+    String getPageSource();
 }
