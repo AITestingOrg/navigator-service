@@ -43,7 +43,6 @@ public class NavigatorService {
         try {
 //        Initializes the root page, adds it to the queue and graph service
             Page rootPage = navigate(rootURL);
-            rootPage.setPageType(classify(rootPage));
             Queue<Page> pageQueue = new LinkedList<>();
             pageQueue.add(rootPage);
             graphService.setRoot(rootPage);
@@ -51,10 +50,8 @@ public class NavigatorService {
 //        Gets the page at the top of the queue when nonempty
             while (!pageQueue.isEmpty()) {
                 Page currentPage = pageQueue.poll();
-                currentPage.setPageType(classify(currentPage));
                 System.out.println("Currently at: " + currentPage.getUrl());
                 currentPage.getChildUrls().forEach(url -> {
-
                     if (validate(url)) {
                         Page toVisitStub = new Page.PageBuilder().setUrl(url).build();
                         Page toVisit = graphService.getVertex(toVisitStub);
@@ -70,8 +67,6 @@ public class NavigatorService {
         } finally {
             after();
         }
-
-        afterRun();
     }
 
     private void after() {

@@ -33,10 +33,11 @@ public class Neo4JGraphDB implements GraphDBAdapter {
     @Override
     public void addVertex(InnerVertex innerVertex) {
         loadSession();
-        
-        session.run("CREATE(a:Page{name:{name},url:{url}},type:{type}})",
+
+        //TODO: Remove pagetype none once classifier is more intelligent
+        session.run("CREATE(a:Page{name:{name},url:{url},type:{type}})",
                 parameters("name", innerVertex.getName(),
-                        "url", innerVertex.getUrl(), "type", innerVertex.getPageType()));
+                        "url", innerVertex.getUrl(), "type", PageType.NONE.toString()));
 
         closeSession();
     }

@@ -58,14 +58,6 @@ public class SeleniumInstrument implements InstrumentAdapter {
 
     @Override
     public String getPageSource() {
-        try {
-            //TODO: Find a better way to store the html
-            PrintWriter writer = new PrintWriter("/Users/bryant/Desktop/Modular/test.html", "UTF-8");
-            writer.append(webDriver.getPageSource());
-            writer.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         return webDriver.getPageSource();
     }
 }

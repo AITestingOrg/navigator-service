@@ -13,7 +13,7 @@ public class HTMLClassifier implements Intelligence {
     public PageType classify(Page page) {
         //TODO: Put error handling for client adapter and configure IP as console arg
         clientAdapter.setIP("http://127.0.0.1:5000/");
-        switch(clientAdapter.getResponse("test.html")) {
+        switch(clientAdapter.getResponse(page.getHtml())) {
             case "Login Page":
                 return PageType.LOGIN;
             case "Registration Page":
