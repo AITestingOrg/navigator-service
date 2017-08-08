@@ -25,56 +25,48 @@ public class NavigatorService {
     private String rootURL;
 
     @Autowired
-    private GraphAdapter<Process, Page> graphAdapter;
+    private GraphService<Process, Page> graphService;
 
     private UrlService urlService;
 
     @Autowired
     private InstrumentAdapter instrumentAdapter;
 
-    private Set<String> visitedURLs;
-
     public NavigatorService() {
-        this.visitedURLs = new HashSet<>();
     }
 
     public void run() {
         try {
-            System.out.println("Starting...");
-            System.out.println("ROOT URL: " + rootURL);
-
 //        Initializes the root page, adds it to the queue and graph service
             Page rootPage = navigate(rootURL);
             Queue<Page> pageQueue = new LinkedList<>();
             pageQueue.add(rootPage);
-            graphAdapter.setRoot(rootPage);
+            graphService.setRoot(rootPage);
             urlService = new UrlService(rootURL);
-
 //        Gets the page at the top of the queue when nonempty
             while (!pageQueue.isEmpty()) {
                 Page currentPage = pageQueue.poll();
                 System.out.println("Currently at: " + currentPage.getUrl());
                 currentPage.getChildUrls().forEach(url -> {
-                    System.out.println("child url: " + url);
-//                Checks if the page has been visited before and checks if it is a valid page
-                    if (!visitedURLs.contains(url) && validate(url)) {
-//                    Instantiate the page we are visiting
-                        Page toVisit = navigate(url);
-//                    Adds the new page to the graph, visited urls, and to the queue
-                        addVertex(toVisit);
+
+                    if (validate(url)) {
+                        Page toVisitStub = new Page.PageBuilder().setUrl(url).build();
+                        Page toVisit = graphService.getVertex(toVisitStub);
+                        if (toVisit == null) {
+                            toVisit = navigate(url);
+                            addVertex(toVisit);
+                            pageQueue.add(toVisit);
+                        }
                         addEdge(currentPage, toVisit, new Process());
-                        visitedURLs.add(toVisit.getUrl());
-                        pageQueue.add(toVisit);
                     }
                 });
             }
-        } catch(Exception e) {
-            e.printStackTrace();
-            afterRun();
+        } finally {
+            after();
         }
     }
 
-    private void afterRun() {
+    private void after() {
         instrumentAdapter.quit();
     }
 
@@ -87,10 +79,10 @@ public class NavigatorService {
     }
 
     private void addVertex(Page page) {
-        graphAdapter.addVertex(page);
+        graphService.addVertex(page);
     }
 
     private void addEdge(Page from, Page to, Process process) {
-        graphAdapter.addEdge(from, to, process);
+        graphService.addEdge(from, to, process);
     }
 }

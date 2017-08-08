@@ -27,12 +27,8 @@ public class SeleniumInstrument implements InstrumentAdapter {
     public SeleniumInstrument(
             @Value("${aist.generation.selenium.driver}") String driver,
             @Value("${aist.generation.selenium.driver-path}") String driverPath) {
-        System.out.println("Creating a selenium driver...");
-        System.out.println(driver);
-        System.out.println(driverPath);
         System.setProperty(driver, driverPath);
         webDriver = new ChromeDriver();
-        System.out.println("Made it here");
     }
 
     /**
@@ -44,7 +40,6 @@ public class SeleniumInstrument implements InstrumentAdapter {
     public Page get(String url) {
         webDriver.get(url);
         Set<String> hyperLinkSet = webDriver.findElements(By.tagName("a")).stream().map(webElement -> webElement.getAttribute("href")).collect(Collectors.toSet());
-        System.out.println("hyperlinkset: " + hyperLinkSet);
         String title = webDriver.getTitle();
         return (new Page.PageBuilder())
                 .setChildUrls(hyperLinkSet)

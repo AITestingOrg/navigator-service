@@ -61,4 +61,24 @@ public class Page implements InnerVertex {
             return new Page(url, pagetype, childUrls, title);
         }
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof Page)) {
+            return false;
+        }
+
+        Page page = (Page) obj;
+        return page.url.equals(this.url);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + url.hashCode();
+        return result;
+    }
 }

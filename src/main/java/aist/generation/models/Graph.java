@@ -56,7 +56,7 @@ public class Graph <E extends InnerEdge,T extends InnerVertex> {
         return !(!containsVertex(from) || !containsVertex(to)) && getVertex(from).hasEdge(getVertex(to));
     }
 
-    private Vertex<E,T> getVertex(T innerVertex) {
+    public Vertex<E,T> getVertex(T innerVertex) {
         return adjacencyList.get(innerVertex);
     }
 }

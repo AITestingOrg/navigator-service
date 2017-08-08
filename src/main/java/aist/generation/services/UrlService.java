@@ -27,19 +27,9 @@ public class UrlService {
     private Optional<URL> generateURL(String urlString) {
         try {
             return Optional.of(new URIBuilder(urlString).build().toURL());
-        } catch (URISyntaxException e) {
-            System.out.println("ERROR: Invalid URL");
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            System.out.println("ERROR: Malformed URL");
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            System.out.println("ERROR: Illegal Argument Exception");
-            e.printStackTrace();
-        } catch(Exception e){
-            e.printStackTrace();
+        } catch (Exception e) {
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     public URL getURL(String urlString) {

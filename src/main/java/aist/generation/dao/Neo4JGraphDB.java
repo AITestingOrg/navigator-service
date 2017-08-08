@@ -33,8 +33,6 @@ public class Neo4JGraphDB implements GraphDBAdapter {
     @Override
     public void addVertex(InnerVertex innerVertex) {
         loadSession();
-
-        System.out.println("Creating Database Vertex");
         session.run("CREATE(a:Page{name:{name},url:{url}})",
                 parameters("name", innerVertex.getName(),
                         "url", innerVertex.getUrl()));
@@ -45,8 +43,6 @@ public class Neo4JGraphDB implements GraphDBAdapter {
     @Override
     public void addEdge(InnerVertex from, InnerVertex to, InnerEdge innerEdge) {
         loadSession();
-
-        System.out.println("Creating Database Edge");
         session.run("MATCH (f:Page{url:{from}})"
                         + "MATCH (t:Page{url:{to}})"
                         + "CREATE (f)-[w:Link]->(t)",
