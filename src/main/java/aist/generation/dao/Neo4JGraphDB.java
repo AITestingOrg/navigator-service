@@ -33,13 +33,8 @@ public class Neo4JGraphDB implements GraphDBAdapter {
     @Override
     public void addVertex(InnerVertex innerVertex) {
         loadSession();
-<<<<<<< HEAD
-
-        System.out.println("Creating Database Vertex");
-        session.run("CREATE(a:Page{name:{name},url:{url},type:{type}})",
-=======
-        session.run("CREATE(a:Page{name:{name},url:{url}})",
->>>>>>> refs/remotes/origin/TOOL-6766-GraphRefactoring
+        
+        session.run("CREATE(a:Page{name:{name},url:{url}},type:{type}})",
                 parameters("name", innerVertex.getName(),
                         "url", innerVertex.getUrl(), "type", innerVertex.getPageType()));
 
