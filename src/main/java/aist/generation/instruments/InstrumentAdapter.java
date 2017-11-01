@@ -1,5 +1,6 @@
 package aist.generation.instruments;
 
+import aist.generation.models.LoginForm;
 import aist.generation.models.Page;
 import org.springframework.stereotype.Service;
 
@@ -11,4 +12,6 @@ public interface InstrumentAdapter {
     Page get(String url);
     void quit();
     String getPageSource();
+    void fillLoginForm(Page page);
+    void sendKeys(LoginForm form);
 }
